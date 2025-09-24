@@ -1,0 +1,42 @@
+classdef TeamServiceTest < matlab.unittest.TestCase
+    % TeamServiceTest 测试团队服务类的功能
+
+    methods (Test)
+        function testGenerateTeamsForOneRound(testCase)
+            % 测试为一轮游戏生成团队
+            service = jetbrains.kotlin.course.alias.team.TeamService();
+            teamsNumber = 5;
+            teams = service.generateTeamsForOneRound(teamsNumber);
+
+            % 验证生成的团队数量
+            testCase.verifyEqual(length(teams), teamsNumber, '应生成正确数量的团队');
+
+            % 验证每个团队都是Team类型
+            for i = 1:teamsNumber
+                testCase.verifyClass(teams{i}, 'jetbrains.kotlin.course.alias.team.Team', ...
+                    '生成的对象应该是Team类型');
+            end
+        end
+
+        function testTeamsStorage(testCase)
+            % 测试团队存储功能
+            service = jetbrains.kotlin.course.alias.team.TeamService();
+
+            % 清空存储以确保测试的独立性
+            % 注意：在实际代码中，可能需要添加一个清空存储的方法
+
+            % 生成团队并测试存储
+            teamsNumber = 3;
+            teams = service.generateTeamsForOneRound(teamsNumber);
+
+            % 验证所有团队都已存储
+            for i = 1:teamsNumber
+                team = teams{i};
+                storedTeam = service.getTeamById(team.id);
+                disp([storedTeam.id team.id])
+                testCase.verifyEqual(storedTeam.id, team.id, ...
+                    '存储的团队ID应与原始团队ID匹配');
+            end
+        end
+    end
+end
